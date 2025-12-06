@@ -33,6 +33,16 @@ output "website_url" {
 }
 
 output "lambda_function_url" {
-  description = "Lambda Function URL for fetching services"
-  value       = aws_lambda_function_url.services.function_url
+  description = "Lambda Function URL for fetching services (only if api_type is lambda_function_url)"
+  value       = var.api_type == "lambda_function_url" ? module.lambda_function_url[0].function_url : null
+}
+
+output "api_gateway_url" {
+  description = "API Gateway URL for fetching services (only if api_type is api_gateway)"
+  value       = var.api_type == "api_gateway" ? "https://${module.api_gateway[0].api_domain_name}${module.api_gateway[0].api_path}" : null
+}
+
+output "api_endpoint_url" {
+  description = "API endpoint URL (Lambda Function URL or API Gateway depending on api_type)"
+  value       = var.api_type == "lambda_function_url" ? module.lambda_function_url[0].function_url : "https://${module.api_gateway[0].api_domain_name}${module.api_gateway[0].api_path}"
 }

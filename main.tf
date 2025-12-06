@@ -141,7 +141,8 @@ resource "aws_s3_object" "script_js" {
   })
 
   depends_on = [
-    aws_lambda_function_url.services
+    module.lambda_function_url,
+    module.api_gateway
   ]
 }
 
@@ -242,8 +243,12 @@ data "archive_file" "lambda_services" {
   }
 }
 
-# Lambda function
+# Lambda function for Lambda Function URL
 resource "aws_lambda_function" "services" {
+  count = var.api_type == "lambda_function_url" ? 1 : 0
+
+  provider = aws.ap_southeast_2
+
   filename         = data.archive_file.lambda_services.output_path
   function_name    = "${var.project_name}-services"
   role             = aws_iam_role.lambda_services.arn
@@ -264,17 +269,53 @@ resource "aws_lambda_function" "services" {
   })
 }
 
-# Lambda Function URL
-resource "aws_lambda_function_url" "services" {
-  function_name      = aws_lambda_function.services.function_name
-  authorization_type = "NONE"
+# Lambda function for API Gateway
+resource "aws_lambda_function" "services_api_gateway" {
+  count = var.api_type == "api_gateway" ? 1 : 0
 
-  cors {
-    allow_origins = ["*"]
-    allow_methods = ["*"]
-    allow_headers = ["*"]
-    max_age       = 3600
+  filename         = data.archive_file.lambda_services.output_path
+  function_name    = "${var.project_name}-services"
+  role             = aws_iam_role.lambda_services.arn
+  handler          = "services.lambda_handler"
+  runtime          = "python3.13"
+  source_code_hash = data.archive_file.lambda_services.output_base64sha256
+  timeout          = 30
+  memory_size      = 512
+
+  environment {
+    variables = {
+      TARGET_REGION = "ap-southeast-6" # Region to list services for
+    }
   }
+
+  tags = merge(local.tags, {
+    Name = "${var.project_name}-lambda-services"
+  })
+}
+
+# Lambda Function URL Module (conditional - only if api_type is lambda_function_url)
+module "lambda_function_url" {
+  count = var.api_type == "lambda_function_url" ? 1 : 0
+
+  source = "./modules/lambda-function-url"
+
+  providers = {
+    aws = aws.ap_southeast_2
+  }
+
+  lambda_function_name = aws_lambda_function.services[0].function_name
+}
+
+# API Gateway Module (conditional - only if api_type is api_gateway)
+module "api_gateway" {
+  count = var.api_type == "api_gateway" ? 1 : 0
+
+  source = "./modules/api-gateway"
+
+  project_name         = var.project_name
+  lambda_function_name = aws_lambda_function.services_api_gateway[0].function_name
+  lambda_invoke_arn    = aws_lambda_function.services_api_gateway[0].invoke_arn
+  tags                 = local.tags
 }
 
 # =============================================================================
@@ -325,8 +366,9 @@ resource "aws_cloudfront_distribution" "this" {
   }
 
   origin {
-    domain_name = trimprefix(trimsuffix(aws_lambda_function_url.services.function_url, "/"), "https://")
+    domain_name = var.api_type == "lambda_function_url" ? module.lambda_function_url[0].domain_name : module.api_gateway[0].api_domain_name
     origin_id   = "origin-lambda"
+    origin_path = var.api_type == "api_gateway" ? "/prod" : ""
 
     custom_origin_config {
       http_port              = 443
