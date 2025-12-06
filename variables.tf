@@ -82,3 +82,13 @@ variable "geo_restriction" {
   })
   default = null
 }
+
+variable "api_type" {
+  description = "Type of API endpoint to use: 'lambda_function_url' or 'api_gateway'"
+  type        = string
+  default     = "lambda_function_url"
+  validation {
+    condition     = contains(["lambda_function_url", "api_gateway"], var.api_type)
+    error_message = "api_type must be either 'lambda_function_url' or 'api_gateway'"
+  }
+}
