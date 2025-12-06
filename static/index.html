@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS ap-southeast-6 Services - Asia Pacific (New Zealand)</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1>🌏 Hello from Asia Pacific (New Zealand)</h1>
+                <p class="subtitle">AWS Region: ap-southeast-6</p>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="top-nav">
+        <div class="container">
+            <ul class="nav-tabs">
+                <li><a href="#services" class="tab-link active" data-tab="services">Services</a></li>
+                <li><a href="#news" class="tab-link" data-tab="news">News & Updates</a></li>
+                <li><a href="#about" class="tab-link" data-tab="about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Services Tab -->
+        <section id="services-tab" class="tab-content active">
+            <div class="tab-header">
+                <h2>Available AWS Services</h2>
+                <p class="tab-description">Explore all AWS services available in the ap-southeast-6 region</p>
+            </div>
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Search services by name, tag, or description..." class="search-input">
+            </div>
+            <p class="loading" id="loading">Loading services...</p>
+            <div id="services-container" class="services-grid"></div>
+            <div id="error-message" class="error" style="display: none;"></div>
+        </section>
+
+        <!-- News Tab -->
+        <section id="news-tab" class="tab-content">
+            <div class="tab-header">
+                <h2>📰 News & Updates</h2>
+                <p class="tab-description">Latest AWS announcements and updates</p>
+            </div>
+            <p class="loading" id="news-loading">Loading news...</p>
+            <div id="news-container"></div>
+            <div id="news-error" class="error" style="display: none;"></div>
+        </section>
+
+        <!-- About Tab -->
+        <section id="about-tab" class="tab-content">
+            <div class="tab-header">
+                <h2>About</h2>
+                <p class="tab-description">Deployment details and architecture information</p>
+            </div>
+            <div class="hero">
+                <h3>Welcome to AWS ap-southeast-6</h3>
+                <p>This demo showcases the AWS services available in the new Asia Pacific (New Zealand) region.</p>
+                <p>Deployed for the <strong>AWS Wellington User Group Meetup</strong> - December 9, 2025</p>
+            </div>
+            <div class="deployment-info">
+                <h3>Deployment Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Architecture:</strong>
+                        <p>S3 + CloudFront Static Website</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Region:</strong>
+                        <p>ap-southeast-6 (Asia Pacific - New Zealand)</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Security:</strong>
+                        <p>Origin Access Control (OAC) enabled</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>CDN:</strong>
+                        <p>CloudFront with global edge locations</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Infrastructure:</strong>
+                        <p>Managed with Terraform</p>
+                    </div>
+                    <div class="info-item">
+                        <strong>Icons:</strong>
+                        <p>873 AWS service icons from <a href="https://github.com/jajera/aws-icons" target="_blank">jajera/aws-icons</a></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
+    <footer>
+        <div class="container">
+            <p>Built with Terraform | Deployed to AWS ap-southeast-6</p>
+            <p><a href="https://github.com/jdevto/tf-aws-s3-cloudfront-demo" target="_blank">View Source Code</a></p>
+        </div>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+</html>
